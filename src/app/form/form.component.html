@@ -1,0 +1,76 @@
+<div>
+  <form class="flex flex-col p-4" [formGroup]="formGroup" role="form">
+    <ng-container *ngFor="let formField of formFields">
+
+        <ng-container [ngSwitch]="formField.type">
+
+          <ng-container *ngSwitchCase="'text'">
+            <mat-form-field appearance="outline">
+              <mat-label>{{formField.label}}</mat-label>
+              <input matInput [placeholder]="formField.placeholder ?? ''" [type]="formField.type" [formControlName]="formField.name">
+            </mat-form-field>
+          </ng-container>
+
+          <ng-container *ngSwitchCase="'number'">
+            <mat-form-field appearance="outline">
+              <mat-label>{{formField.label}}</mat-label>
+            <input matInput [placeholder]="formField.placeholder ?? ''" [type]="formField.type" [formControlName]="formField.name">
+            </mat-form-field>
+          </ng-container>
+
+          <ng-container *ngSwitchCase="'select'">
+            <mat-form-field appearance="outline">
+              <mat-label>{{formField.label}}</mat-label>
+            <mat-select [formControlName]="formField.name">
+              <mat-option *ngFor="let option of formField.options" [value]="option">
+                {{option}}
+              </mat-option>
+            </mat-select>
+            </mat-form-field>
+          </ng-container>
+
+          <ng-container *ngSwitchCase="'date'">
+            <mat-form-field appearance="outline">
+              <mat-label>{{formField.label}}</mat-label>
+              <input matInput [matDatepicker]="picker" [placeholder]="formField.placeholder ?? ''" [formControlName]="formField.name">
+              <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+          </ng-container>
+
+          <ng-container *ngSwitchCase="'time'">
+            <mat-form-field appearance="outline">
+              <mat-label>{{formField.label}}</mat-label>
+              <input matInput [ngxTimepicker]="picker" [format]="24" [placeholder]="formField.placeholder ?? ''" [formControlName]="formField.name">
+              <ngx-material-timepicker #picker></ngx-material-timepicker>
+            </mat-form-field>
+          </ng-container>
+
+          <ng-container *ngSwitchCase="'datetime'">
+            <div class="w-full flex flex-row gap-2">
+              <mat-form-field class="w-full" appearance="outline">
+                <mat-label>Date of {{formField.label}}</mat-label>
+                <input matInput [matDatepicker]="datePicker" [placeholder]="formField.placeholder ?? ''" [formControlName]="formField.name">
+                <mat-datepicker-toggle matIconSuffix [for]="datePicker"></mat-datepicker-toggle>
+                <mat-datepicker #datePicker></mat-datepicker>
+              </mat-form-field>
+              <mat-form-field class="w-full" appearance="outline">
+                <mat-label>Time of {{formField.label}}</mat-label>
+              <input matInput [ngxTimepicker]="timePicker" [format]="24" value="{{formGroup.get(formField.name)?.value | date: 'HH:mm'}}">
+              <ngx-material-timepicker (timeSet)="onTimeChanged($event, formField.name)" #timePicker></ngx-material-timepicker>
+              </mat-form-field>
+            </div>
+          </ng-container>
+
+          <ng-container *ngSwitchCase="'checkbox'">
+            <mat-checkbox [formControlName]="formField.name">{{ formField.label }}</mat-checkbox>
+          </ng-container>
+
+        </ng-container>
+    </ng-container>
+    <section class="w-full flex justify-end gap-2">
+      <button mat-raised-button (click)="onCancel()">Cancel</button>
+      <button mat-raised-button color="primary" (click)="onSave()">Save</button>
+    </section>
+  </form>
+</div>
